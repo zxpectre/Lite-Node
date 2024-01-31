@@ -664,6 +664,26 @@ menu() {
                   fi
                   show_splash_screen
                   ;;
+                "REMOVE Postgres DB Volume")
+                  # Logic for Remove Postgres DB Volume
+                  postgress_container_id=$(docker ps -qf "name=${PROJ_NAME}-postgress")
+                  if [ -z "$postgress_container_id" ]; then
+
+                    dbsync_container_id=$(docker ps -qf "name=${PROJ_NAME}-cardano-db-sync")
+                    if [ -z "$dbsync_container_id" ]; then
+                      docker volume rm ${PROJ_NAME}_postgresdb
+                    else
+                      echo "Running Dbsync container found. Down all containers first."
+                      read -r -p "Press enter to continue"
+                    fi
+
+                  else
+                    # Logs
+                    echo "Running Postgres DB container found. Down all containers first."
+                    read -r -p "Press enter to continue"
+                  fi
+                  show_splash_screen
+                  ;;
               esac
               ;;
             "Exit")
