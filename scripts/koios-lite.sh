@@ -671,7 +671,9 @@ menu() {
 
                     dbsync_container_id=$(docker ps -qf "name=${PROJ_NAME}-cardano-db-sync")
                     if [ -z "$dbsync_container_id" ]; then
+                      echo "REMOVING Postgres DB Volume..."
                       docker volume rm ${PROJ_NAME}_postgresdb
+                      read -r -p "Press enter to continue"
                     else
                       echo "Running Dbsync container found. Down all containers first."
                       read -r -p "Press enter to continue"
