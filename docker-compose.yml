@@ -154,7 +154,7 @@ services:
         PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
         PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
         PGADMIN_LISTEN_PORT: ${PGADMIN_LISTEN_PORT}
-        PGADMIN_SERVER_JSON_FILE: /usr/local/pgadmin/server.json
+        PGADMIN_SERVER_JSON_FILE: /config/server.json
     ports:
         - "${PGADMIN_LISTEN_PORT:-5050}:80"
     links:
@@ -164,12 +164,12 @@ services:
     # not supported until docker compose 2.23.1
     # configs:
     #   - source: pgadmin_server
-    #     target: /usr/local/pgadmin/server.json
+    #     target: /config/server.json
     entrypoint: >
       /bin/sh -c "
-      mkdir -p /usr/local/pgadmin;
+      mkdir -p /config;
       echo '{"Servers": {"1": { "Group": "Servers", "Name": "${NETWORK}", "Host": "${PROJ_NAME}-postgres-1", "Port": ${POSTGRES_PORT}, "MaintenanceDB": "${POSTGRES_DB}",  "Username": ${POSTGRES_USER},  "ConnectionParameters": {  "sslmode": "prefer", "connect_timeout": 10, "passfile": "/pgpass" } }}}' > /usr/local/pgadmin/server.json;
-      chmod 600 /usr/local/pgadmin/server.json;
+      chmod 600 /config/server.json;
       /entrypoint.sh;
       "
     depends_on:
