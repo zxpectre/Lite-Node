@@ -19,7 +19,7 @@ services:
       /bin/sh -c "
       echo 'Exporting node config.json into node-cfg volume...' ;
       cp /opt/cardano/cnode/files/config.json /opt/cardano/cnode/priv/files/config.json ;
-      /entrypoint.sh
+      ./entrypoint.sh ;
       "
     restart: on-failure
     healthcheck:
