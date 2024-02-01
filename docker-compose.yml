@@ -161,9 +161,17 @@ services:
         - "postgress:pgsql-server"
     volumes:
         - pgadmin-data:/var/lib/pgadmin
-    configs:
-      - source: pgadmin_server
-        target: /usr/local/pgadmin/server.json
+    # not supported until docker compose 2.23.1
+    # configs:
+    #   - source: pgadmin_server
+    #     target: /usr/local/pgadmin/server.json
+    entrypoint: >
+      /bin/sh -c "
+      mkdir -p /usr/local/pgadmin;
+      echo '{"Servers": {"1": { "Group": "Servers", "Name": "${NETWORK}", "Host": "${PROJ_NAME}-postgres-1", "Port": ${POSTGRES_PORT}, "MaintenanceDB": "${POSTGRES_DB}",  "Username": ${POSTGRES_USER},  "ConnectionParameters": {  "sslmode": "prefer", "connect_timeout": 10, "passfile": "/pgpass" } }}}' > /usr/local/pgadmin/server.json;
+      chmod 600 /usr/local/pgadmin/server.json;
+      /entrypoint.sh;
+      "
     depends_on:
       postgress:
         condition: service_healthy
@@ -208,10 +216,11 @@ services:
     # - ./logs:/var/log
     restart: unless-stopped
 
-configs:
-  pgadmin_server:
-    environment: PGADMIN_SERVER
-    #content: '{"Servers": {"1": { "Group": "Servers", "Name": "${NETWORK}", "Host": "${PROJ_NAME}-postgres-1", "Port": ${POSTGRES_PORT}, "MaintenanceDB": "${POSTGRES_DB}",  "Username": ${POSTGRES_USER},  "ConnectionParameters": {  "sslmode": "prefer", "connect_timeout": 10, "passfile": "/pgpass" } }}}'
+# not supported until docker compose 2.23.1
+# configs:
+#   pgadmin_server:
+#     environment: PGADMIN_SERVER
+#     content: '{"Servers": {"1": { "Group": "Servers", "Name": "${NETWORK}", "Host": "${PROJ_NAME}-postgres-1", "Port": ${POSTGRES_PORT}, "MaintenanceDB": "${POSTGRES_DB}",  "Username": ${POSTGRES_USER},  "ConnectionParameters": {  "sslmode": "prefer", "connect_timeout": 10, "passfile": "/pgpass" } }}}'
 
 volumes:
   node-db:
