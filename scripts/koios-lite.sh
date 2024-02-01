@@ -549,7 +549,7 @@ menu() {
               ;;
 
             "Advanced")
-              setup_choice=$(gum choose --height 15 --cursor.foreground 229 --item.foreground 39 "$(gum style --foreground 82  "Enter Cardano Node")" "$(gum style --foreground 85  "Logs Cardano Node")" "$(gum style --foreground 82 "Enter Postgres")" "$(gum style --foreground 85 "Logs Postgres")" "$(gum style --foreground 82 "Enter Dbsync")" "$(gum style --foreground 85 "Logs Dbsync")" "$(gum style --foreground 85 "Logs PostgREST")" "$(gum style --foreground 82 "Enter HAProxy")" "$(gum style --foreground 85 "Logs HAProxy")" "$(gum style --foreground 160 "REMOVE Postgres DB Volume")" "$(gum style --foreground 208 "Back")")
+              setup_choice=$(gum choose --height 15 --cursor.foreground 229 --item.foreground 39 "$(gum style --foreground 82  "Enter Cardano Node")" "$(gum style --foreground 85  "Logs Cardano Node")" "$(gum style --foreground 82 "Enter Postgres")" "$(gum style --foreground 85 "Logs Postgres")" "$(gum style --foreground 82 "Enter Dbsync")" "$(gum style --foreground 85 "Logs Dbsync")" "$(gum style --foreground 85 "Logs PostgREST")" "$(gum style --foreground 82 "Enter HAProxy")" "$(gum style --foreground 85 "Logs HAProxy")" "$(gum style --foreground 85 "Logs Ogmios")" "$(gum style --foreground 85 "Logs Unimatrix")" "$(gum style --foreground 160 "REMOVE Postgres DB Volume")" "$(gum style --foreground 208 "Back")")
               case "$setup_choice" in
                 "Enter Cardano Node")
                   # Enter
@@ -656,6 +656,34 @@ menu() {
                   container_id=$(docker ps -qf "name=${PROJ_NAME}-haproxy")
                   if [ -z "$container_id" ]; then
                     echo "No running HAProxy container found."
+                    read -r -p "Press enter to continue"
+                  else
+                    # Logs
+                    docker logs "$container_id" | more
+                    read -r -p "End of logs reached, press enter to continue"
+                  fi
+                  show_splash_screen
+                  ;;
+                "Logs Ogmios")
+                  # Logic for Logs Ogmios
+                  service_name="ogmios"
+                  container_id=$(docker ps -qf "name=${PROJ_NAME}-${service_name}")
+                  if [ -z "$container_id" ]; then
+                    echo "No running Ogmios container found."
+                    read -r -p "Press enter to continue"
+                  else
+                    # Logs
+                    docker logs "$container_id" | more
+                    read -r -p "End of logs reached, press enter to continue"
+                  fi
+                  show_splash_screen
+                  ;;
+                "Logs Unimatrix")
+                  # Logic for Logs Ogmios
+                  service_name="unimatrix"
+                  container_id=$(docker ps -qf "name=${PROJ_NAME}-${service_name}")
+                  if [ -z "$container_id" ]; then
+                    echo "No running Unimatrix container found."
                     read -r -p "Press enter to continue"
                   else
                     # Logs

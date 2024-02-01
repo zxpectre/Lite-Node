@@ -139,7 +139,7 @@ services:
         max-size: "200k"
         max-file: "10"
 
-  unimatrix-peer:
+  unimatrix:
     image: unimatrix-peer:latest
     build:
       context: ./src/unimatrix
