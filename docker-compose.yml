@@ -154,7 +154,7 @@ services:
         PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
         PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
         PGADMIN_LISTEN_PORT: 80
-        PGADMIN_SERVER_JSON_FILE: /var/lib/pgadmin/servers.json
+        PGADMIN_SERVER_JSON_FILE: /servers.json
     ports:
         - "${PGADMIN_LISTEN_PORT:-5050}:80"
     links:
@@ -167,13 +167,16 @@ services:
     #     target: /var/lib/pgadmin/servers.json
     entrypoint: >
       /bin/sh -c "
-      rm -rf /var/lib/pgadmin/servers.json ;
-      mkdir -p /var/lib/pgadmin ;
-      echo '{\"Servers\": {\"1\": { \"Group\": \"Servers\", \"Name\": \"${NETWORK}\", \"Host\": \"${PROJ_NAME}-postgres-1\", \"Port\": ${POSTGRES_PORT}, \"MaintenanceDB\": \"${POSTGRES_DB}\",  \"Username\": ${POSTGRES_USER},  \"ConnectionParameters\": {  \"sslmode\": \"prefer\", \"connect_timeout\": 10, \"passfile\": \"/pgpass\" } }}}' > /var/lib/pgadmin/servers.json ;
-      chmod 600 /var/lib/pgadmin/servers.json ;
-      echo 'Default Config:' ;
-      cat /var/lib/pgadmin/servers.json ;
-      /entrypoint.sh;
+      export PGADMIN_SERVER_JSON_FILE=/servers.json ;
+      rm -rf /pgpass ;
+      rm -rf $$PGADMIN_SERVER_JSON_FILE ;
+      echo '${PGADMIN_DEFAULT_PASSWORD}' > /pgpass ;
+      echo '{\"Servers\": {\"1\": { \"Group\": \"Servers\", \"Name\": \"${NETWORK}\", \"Host\": \"${PROJ_NAME}-postgres-1\", \"Port\": ${POSTGRES_PORT}, \"MaintenanceDB\": \"${POSTGRES_DB}\",  \"Username\": \"${POSTGRES_USER}\",  \"ConnectionParameters\": {  \"sslmode\": \"prefer\", \"connect_timeout\": 10, \"passfile\": \"/pgpass\" } }}}' > $$PGADMIN_SERVER_JSON_FILE ;
+      chmod 600 /pgpass ;
+      chmod 600 $$PGADMIN_SERVER_JSON_FILE ;
+      echo 'Default Config file $$PGADMIN_SERVER_JSON_FILE' ;
+      cat $$PGADMIN_SERVER_JSON_FILE ;
+      PGADMIN_SERVER_JSON_FILE=$$PGADMIN_SERVER_JSON_FILE /entrypoint.sh;
       "
     depends_on:
       postgress:
