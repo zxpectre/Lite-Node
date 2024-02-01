@@ -146,6 +146,7 @@ services:
     environment:
       API_URL: http://127.0.0.1:8050/
 
+
   pgadmin:
     image: dpage/pgadmin4
     restart: always
@@ -160,7 +161,6 @@ services:
         - "postgres:pgsql-server"
     volumes:
         - pgadmin-data:/var/lib/pgadmin
-       - ./config/servers.json:/pgadmin4/servers.json
     secrets:
       - pgadmin_server.json
     depends_on:
