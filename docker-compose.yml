@@ -218,3 +218,4 @@ volumes:
   db-sync-data:
   postgresdb:
   portainer-data:
+  pgadmin-data:
