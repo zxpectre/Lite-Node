@@ -173,10 +173,10 @@ services:
       rm -rf $$PGADMIN_PASSWORD_FILE ;
       rm -rf $$PGADMIN_SERVER_JSON_FILE ;
       echo '${PGADMIN_DEFAULT_PASSWORD}' > $$PGADMIN_PASSWORD_FILE ;
-      echo '{\"Servers\": {\"1\": { \"Group\": \"Servers\", \"Name\": \"${NETWORK}\", \"Host\": \"${PROJ_NAME}-postgres-1\", \"Port\": ${POSTGRES_PORT}, \"MaintenanceDB\": \"${POSTGRES_DB}\",  \"Username\": \"${POSTGRES_USER}\",  \"ConnectionParameters\": {  \"sslmode\": \"prefer\", \"connect_timeout\": 10, \"passfile\": \"$$PGADMIN_PASSWORD_FILE\" } }}}' > $$PGADMIN_SERVER_JSON_FILE ;
+      echo '{\"Servers\": {\"1\": { \"Group\": \"Servers\", \"Name\": \"${NETWORK}\", \"Host\": \"${PROJ_NAME}-postgres-1\", \"Port\": ${POSTGRES_PORT}, \"MaintenanceDB\": \"${POSTGRES_DB}\",  \"Username\": \"${POSTGRES_USER}\",  \"ConnectionParameters\": {  \"sslmode\": \"prefer\", \"connect_timeout\": 10, \"passfile\": \"$PGADMIN_PASSWORD_FILE\" } }}}' > $$PGADMIN_SERVER_JSON_FILE ;
       chmod 600 $$PGADMIN_PASSWORD_FILE ;
       chmod 600 $$PGADMIN_SERVER_JSON_FILE ;
-      echo 'Default Config file $$PGADMIN_SERVER_JSON_FILE' ;
+      echo 'Default Config file $PGADMIN_SERVER_JSON_FILE' ;
       cat $$PGADMIN_SERVER_JSON_FILE ;
       PGADMIN_SERVER_JSON_FILE=$$PGADMIN_SERVER_JSON_FILE /entrypoint.sh;
       "
