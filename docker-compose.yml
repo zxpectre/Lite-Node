@@ -15,6 +15,12 @@ services:
       - node-ipc:/opt/cardano/cnode/sockets
       - node-cfg:/opt/cardano/cnode/priv/files
       - ./scripts/:/scripts/
+    entrypoint: >
+      /bin/sh -c "
+      echo 'Exporting node config.json into node-cfg volume...' ;
+      cp /opt/cardano/cnode/files/config.json /opt/cardano/cnode/priv/files/config.json ;
+      /entrypoint.sh
+      "
     restart: on-failure
     healthcheck:
       test: ["CMD-SHELL", "netstat -ntlp | grep 12798"]
@@ -61,6 +67,26 @@ services:
       options:
         max-size: "200k"
         max-file: "10"
+
+  # TODO: add http backend ogmios and it's entry on /configs/haproxy/haproxy.cfg
+  ogmios:
+    image: cardanosolutions/ogmios:${OGMIOS_VERSION:-latest}
+    restart: on-failure
+    command: [
+      "--host", "0.0.0.0",
+      "--node-socket", "/ipc/node.socket",
+      "--node-config", "/config/cardano-node/config.json"
+    ]
+    volumes:
+      # exported automagically from cardano-node
+      - node-cfg:/config/cardano-node/
+      - node-ipc:/ipc
+    ports:
+      - ${OGMIOS_PORT:-1337}:1337
+    depends_on:
+      cardano-node:
+        condition: service_healthy
+
 
   postgress:
     image: postgres:16.1-bullseye
@@ -112,6 +138,21 @@ services:
       options:
         max-size: "200k"
         max-file: "10"
+
+  unimatrix-peer:
+    image: unimatrix-peer:latest
+    build:
+      context: ./src/unimatrix
+    restart: always
+    environment:
+      - UNIMATRIX_PORT:${UNIMATRIX_PORT:-8765}
+    # static http server can be exposed as well
+    ports:
+      - ${UNIMATRIX_PORT:-8765}:8765
+    # TODO: fix env vars passing and link to persistent volume
+    volumes:
+      - unimatrix-data:/work/data
+
 
   portainer-agent:
     image: portainer/agent:latest
@@ -239,3 +280,4 @@ volumes:
   postgresdb:
   portainer-data:
   pgadmin-data:
+  unimatrix-data:
