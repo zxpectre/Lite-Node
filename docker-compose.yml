@@ -167,6 +167,7 @@ services:
     #     target: /var/lib/pgadmin/servers.json
     entrypoint: >
       /bin/sh -c "
+      rm -rf /var/lib/pgadmin/servers.json ;
       mkdir -p /var/lib/pgadmin ;
       echo '{\"Servers\": {\"1\": { \"Group\": \"Servers\", \"Name\": \"${NETWORK}\", \"Host\": \"${PROJ_NAME}-postgres-1\", \"Port\": ${POSTGRES_PORT}, \"MaintenanceDB\": \"${POSTGRES_DB}\",  \"Username\": ${POSTGRES_USER},  \"ConnectionParameters\": {  \"sslmode\": \"prefer\", \"connect_timeout\": 10, \"passfile\": \"/pgpass\" } }}}' > /var/lib/pgadmin/servers.json ;
       chmod 600 /var/lib/pgadmin/servers.json ;
@@ -231,4 +232,4 @@ volumes:
   db-sync-data:
   postgresdb:
   portainer-data:
-  # pgadmin-data:
+  pgadmin-data:
