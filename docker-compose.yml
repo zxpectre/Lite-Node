@@ -170,6 +170,8 @@ services:
       mkdir -p /var/lib/pgadmin ;
       echo '{"Servers": {"1": { "Group": "Servers", "Name": "${NETWORK}", "Host": "${PROJ_NAME}-postgres-1", "Port": ${POSTGRES_PORT}, "MaintenanceDB": "${POSTGRES_DB}",  "Username": ${POSTGRES_USER},  "ConnectionParameters": {  "sslmode": "prefer", "connect_timeout": 10, "passfile": "/pgpass" } }}}' > /var/lib/pgadmin/servers.json ;
       chmod 600 /var/lib/pgadmin/servers.json ;
+      echo "Default Config:" ;
+      cat /var/lib/pgadmin/servers.json ;
       /entrypoint.sh;
       "
     depends_on:
