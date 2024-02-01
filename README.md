@@ -1,5 +1,7 @@
 ![Example Image](images/Koios.png)
-# Koios Lite
+# GC Node
+
+GC Node is based on Koios Lite.
 
 Koios Lite is a streamlined version of the Koios ecosystem, designed for efficient data synchronization and querying on the Cardano blockchain. This setup uses Docker to create a local environment that mirrors the production setup, making it ideal for development and testing.
 
