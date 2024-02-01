@@ -17,8 +17,8 @@ services:
       - ./scripts/:/scripts/
     entrypoint: >
       /bin/sh -c "
-      echo 'Exporting node config.json into node-cfg volume...' ;
-      cp /opt/cardano/cnode/files/config.json /opt/cardano/cnode/priv/files/config.json ;
+      echo 'Exporting node config files into node-cfg volume...' ;
+      cp /opt/cardano/cnode/files/* /opt/cardano/cnode/priv/files/* ;
       ./entrypoint.sh ;
       "
     restart: on-failure
