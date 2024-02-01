@@ -154,15 +154,16 @@ services:
         PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
         PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
         PGADMIN_LISTEN_PORT: ${PGADMIN_LISTEN_PORT}
-        PGADMIN_SERVER_JSON_FILE: /run/secrets/pgadmin_server.json
+        PGADMIN_SERVER_JSON_FILE: /usr/local/pgadmin/server.json
     ports:
         - "${PGADMIN_LISTEN_PORT:-5050}:80"
     links:
         - "postgress:pgsql-server"
     volumes:
         - pgadmin-data:/var/lib/pgadmin
-    secrets:
-      - pgadmin_server.json
+    configs:
+      - source: pgadmin_server
+        target: /usr/local/pgadmin/server.json
     depends_on:
       postgress:
         condition: service_healthy
@@ -207,9 +208,9 @@ services:
     # - ./logs:/var/log
     restart: unless-stopped
 
-secrets:
-  pgadmin_server.json:
-      environment: '{"Servers": {"1": { "Group": "Servers", "Name": "${NETWORK}", "Host": "${PROJ_NAME}-postgres-1", "Port": ${POSTGRES_PORT}, "MaintenanceDB": "${POSTGRES_DB}",  "Username": ${POSTGRES_USER},  "ConnectionParameters": {  "sslmode": "prefer", "connect_timeout": 10, "passfile": "/pgpass" } }}}'
+configs:
+  pgadmin_server:
+      content: '{"Servers": {"1": { "Group": "Servers", "Name": "${NETWORK}", "Host": "${PROJ_NAME}-postgres-1", "Port": ${POSTGRES_PORT}, "MaintenanceDB": "${POSTGRES_DB}",  "Username": ${POSTGRES_USER},  "ConnectionParameters": {  "sslmode": "prefer", "connect_timeout": 10, "passfile": "/pgpass" } }}}'
 
 volumes:
   node-db:
